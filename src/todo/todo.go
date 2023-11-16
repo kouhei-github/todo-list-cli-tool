@@ -2,6 +2,7 @@ package todo
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"time"
 )
@@ -23,6 +24,17 @@ func (t *Todos) Add(task string) {
 		CompletedAt: time.Time{},
 	}
 	*t = append(*t, todo)
+}
+
+func (t *Todos) Complete(index int) error {
+	todos := *t
+	if index <= 0 || index > len(todos) {
+		return errors.New("invalid insdex")
+	}
+
+	todos[index-1].Done = true
+	todos[index-1].CompletedAt = time.Now()
+	return nil
 }
 
 func (t *Todos) Store(jsonPath string) error {

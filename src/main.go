@@ -17,6 +17,7 @@ const (
 
 func main() {
 	add := flag.Bool("add", false, "タスクを追加する")
+	complete := flag.Int("complete", 0, "タスクを完了させる")
 
 	flag.Parse()
 
@@ -29,7 +30,6 @@ func main() {
 
 	switch {
 	case *add:
-
 		task, err := getInput(os.Stdin, flag.Args()...)
 		if err = todos.Store(todoFile); err != nil {
 			fmt.Fprintln(os.Stdout, err.Error())
@@ -37,6 +37,15 @@ func main() {
 		}
 		todos.Add(task)
 		if err = todos.Store(todoFile); err != nil {
+			fmt.Fprintln(os.Stdout, err.Error())
+			os.Exit(0)
+		}
+	case *complete > 0 && *complete < len(*todos)+1:
+		if err := todos.Complete(*complete); err != nil {
+			fmt.Fprintln(os.Stdout, err.Error())
+			os.Exit(0)
+		}
+		if err := todos.Store(todoFile); err != nil {
 			fmt.Fprintln(os.Stdout, err.Error())
 			os.Exit(0)
 		}
