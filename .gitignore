@@ -107,3 +107,4 @@ go.work
 src/.env
 .idea
 upload.sh
+todos
