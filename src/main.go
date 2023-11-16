@@ -19,6 +19,7 @@ func main() {
 	add := flag.Bool("add", false, "タスクを追加する")
 	complete := flag.Int("complete", 0, "タスクを完了させる")
 	del := flag.Int("del", 0, "タスクを削除する")
+	list := flag.Bool("list", false, "タスクの一覧を表示させる")
 
 	flag.Parse()
 
@@ -59,6 +60,8 @@ func main() {
 			fmt.Fprintln(os.Stdout, err.Error())
 			os.Exit(0)
 		}
+	case *list:
+		todos.Print()
 	default:
 		fmt.Fprintln(os.Stdout, "invalid command")
 		os.Exit(0)
