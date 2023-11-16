@@ -66,10 +66,16 @@ func (t *Todos) Print() {
 	var cells [][]*simpletable.Cell
 
 	for i, task := range *t {
+		ourTask := blue(task.Task)
+		done := blue("no")
+		if task.Done {
+			ourTask = green(fmt.Sprintf("\u2705 %s", task.Task))
+			done = green("yes")
+		}
 		cells = append(cells, *&[]*simpletable.Cell{
 			&simpletable.Cell{Text: fmt.Sprintf("%d", i+1)},
-			&simpletable.Cell{Text: task.Task},
-			&simpletable.Cell{Text: fmt.Sprintf("%t", task.Done)},
+			&simpletable.Cell{Text: ourTask},
+			&simpletable.Cell{Text: done},
 			&simpletable.Cell{Text: task.CreatedAt.String()},
 			&simpletable.Cell{Text: task.CompletedAt.String()},
 		})
@@ -78,7 +84,7 @@ func (t *Todos) Print() {
 	table.Body = &simpletable.Body{Cells: cells}
 
 	table.Footer = &simpletable.Footer{Cells: []*simpletable.Cell{
-		&simpletable.Cell{Align: simpletable.AlignCenter, Text: "your todos are here", Span: 5},
+		&simpletable.Cell{Align: simpletable.AlignCenter, Text: red(fmt.Sprintf("You have %d pending todos", t.CountPending())), Span: 5},
 	}}
 
 	table.SetStyle(simpletable.StyleUnicode)
@@ -106,4 +112,14 @@ func (t *Todos) Load(jsonPath string) error {
 		return err
 	}
 	return nil
+}
+
+func (t *Todos) CountPending() int32 {
+	var total int32 = 0
+	for _, task := range *t {
+		if !task.Done {
+			total++
+		}
+	}
+	return total
 }
