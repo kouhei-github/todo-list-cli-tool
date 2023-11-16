@@ -1,5 +1,6 @@
 # TODO List Cli Tool
-Todo listが確認できるCLIツールを作成しました。
+Todo listが確認できるCLIツールを作成した。
+![スクリーンショット 2023-11-17 3 45 55](https://github.com/kouhei-github/todo-list-cli-tool/assets/49782052/33da00a2-c095-44ad-87a6-5261434d7d9e)
 
 ---
 
