@@ -69,15 +69,15 @@ func (t *Todos) Print() {
 		ourTask := blue(task.Task)
 		done := blue("no")
 		if task.Done {
-			ourTask = green(fmt.Sprintf("\u2705 %s", task.Task))
+			ourTask = green(fmt.Sprintf("\u2705 %s", " "+task.Task))
 			done = green("yes")
 		}
 		cells = append(cells, *&[]*simpletable.Cell{
 			&simpletable.Cell{Text: fmt.Sprintf("%d", i+1)},
 			&simpletable.Cell{Text: ourTask},
 			&simpletable.Cell{Text: done},
-			&simpletable.Cell{Text: task.CreatedAt.String()},
-			&simpletable.Cell{Text: task.CompletedAt.String()},
+			&simpletable.Cell{Text: task.CreatedAt.Format(time.RFC822)},
+			&simpletable.Cell{Text: task.CompletedAt.Format(time.RFC822)},
 		})
 	}
 
@@ -87,7 +87,7 @@ func (t *Todos) Print() {
 		&simpletable.Cell{Align: simpletable.AlignCenter, Text: red(fmt.Sprintf("You have %d pending todos", t.CountPending())), Span: 5},
 	}}
 
-	table.SetStyle(simpletable.StyleUnicode)
+	table.SetStyle(simpletable.StyleDefault)
 	table.Println()
 }
 
