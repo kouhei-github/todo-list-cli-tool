@@ -29,11 +29,21 @@ func (t *Todos) Add(task string) {
 func (t *Todos) Complete(index int) error {
 	todos := *t
 	if index <= 0 || index > len(todos) {
-		return errors.New("invalid insdex")
+		return errors.New("invalid index")
 	}
 
 	todos[index-1].Done = true
 	todos[index-1].CompletedAt = time.Now()
+	return nil
+}
+
+func (t *Todos) Delete(index int) error {
+	todos := *t
+	if index <= 0 || index > len(todos) {
+		return errors.New("invalid index")
+	}
+
+	*t = append(todos[:index-1], todos[index:]...)
 	return nil
 }
 
