@@ -1,7 +1,68 @@
-package src
+package main
 
-import "fmt"
+import (
+	"bufio"
+	"errors"
+	"flag"
+	"fmt"
+	"github.com/kouhei-github/todo-list-cli-tool/todo"
+	"io"
+	"os"
+	"strings"
+)
+
+const (
+	todoFile = "./storages/todos.json"
+)
 
 func main() {
-	fmt.Println("Hello Golang")
+	add := flag.Bool("add", false, "タスクを追加する")
+
+	flag.Parse()
+
+	todos := &todo.Todos{}
+
+	if err := todos.Load(todoFile); err != nil {
+		fmt.Fprintln(os.Stdout, err.Error())
+		os.Exit(0)
+	}
+
+	switch {
+	case *add:
+
+		task, err := getInput(os.Stdin, flag.Args()...)
+		if err = todos.Store(todoFile); err != nil {
+			fmt.Fprintln(os.Stdout, err.Error())
+			os.Exit(0)
+		}
+		todos.Add(task)
+		if err = todos.Store(todoFile); err != nil {
+			fmt.Fprintln(os.Stdout, err.Error())
+			os.Exit(0)
+		}
+	default:
+		fmt.Fprintln(os.Stdout, "invalid command")
+		os.Exit(0)
+	}
+
+}
+
+func getInput(r io.Reader, args ...string) (string, error) {
+	if len(args) > 0 {
+		return strings.Join(args, " "), nil
+	}
+
+	scanner := bufio.NewScanner(r)
+	scanner.Scan()
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+
+	text := scanner.Text()
+
+	if len(text) == 0 {
+		return "", errors.New("todoリストがからです")
+	}
+
+	return text, nil
 }
