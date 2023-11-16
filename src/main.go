@@ -61,7 +61,7 @@ func main() {
 			os.Exit(0)
 		}
 	case *list:
-		fmt.Println("list")
+		todos.Print()
 	default:
 		fmt.Fprintln(os.Stdout, "invalid command")
 		os.Exit(0)
