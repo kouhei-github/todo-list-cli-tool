@@ -1,6 +1,32 @@
 # TODO List Cli Tool
 Todo listが確認できるCLIツールを作成した。
+
 ![スクリーンショット 2023-11-17 3 45 55](https://github.com/kouhei-github/todo-list-cli-tool/assets/49782052/33da00a2-c095-44ad-87a6-5261434d7d9e)
+
+バイナリファイルの作成
+```shell
+go build -o todos main.go
+```
+
+タスクの表示
+```shell
+./todos -list
+```
+
+タスクの追加
+```shell
+./todos -add create a landing page
+```
+
+タスクの完了
+```shell
+./todos -complete=6
+```
+
+タスクの削除
+```shell
+./todos -del=6
+```
 
 ---
 
