@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bufio"
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/kouhei-github/todo-list-cli-tool/todo"
+	"io"
 	"os"
+	"strings"
 )
 
 const (
@@ -18,10 +22,21 @@ func main() {
 
 	todos := &todo.Todos{}
 
+	if err := todos.Load(todoFile); err != nil {
+		fmt.Fprintln(os.Stdout, err.Error())
+		os.Exit(0)
+	}
+
 	switch {
 	case *add:
-		todos.Add("Sample todo")
-		if err := todos.Store(todoFile); err != nil {
+
+		task, err := getInput(os.Stdin, flag.Args()...)
+		if err = todos.Store(todoFile); err != nil {
+			fmt.Fprintln(os.Stdout, err.Error())
+			os.Exit(0)
+		}
+		todos.Add(task)
+		if err = todos.Store(todoFile); err != nil {
 			fmt.Fprintln(os.Stdout, err.Error())
 			os.Exit(0)
 		}
@@ -30,4 +45,24 @@ func main() {
 		os.Exit(0)
 	}
 
+}
+
+func getInput(r io.Reader, args ...string) (string, error) {
+	if len(args) > 0 {
+		return strings.Join(args, " "), nil
+	}
+
+	scanner := bufio.NewScanner(r)
+	scanner.Scan()
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+
+	text := scanner.Text()
+
+	if len(text) == 0 {
+		return "", errors.New("todoリストがからです")
+	}
+
+	return text, nil
 }

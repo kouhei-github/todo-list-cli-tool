@@ -26,15 +26,23 @@ func (t *Todos) Add(task string) {
 }
 
 func (t *Todos) Store(jsonPath string) error {
-	file, err := os.OpenFile(jsonPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	data, err := json.Marshal(t)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(jsonPath, data, 0644)
+}
+
+func (t *Todos) Load(jsonPath string) error {
+	file, err := os.OpenFile(jsonPath, os.O_RDONLY, 0644)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	encoder := json.NewEncoder(file)
+	decoder := json.NewDecoder(file)
 
-	if err = encoder.Encode(t); err != nil {
+	if err = decoder.Decode(t); err != nil {
 		return err
 	}
 	return nil
